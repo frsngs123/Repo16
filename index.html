@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Playlist with Unity Ads</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://ads.unity.com/web-sdk.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+
+        #ad-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            justify-items: center;
+            margin-bottom: 10px;
+        }
+
+        .banner-ad {
+            width: 320px;
+            height: 50px;
+            background-color: lightgray;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 1px solid #ccc;
+        }
+
+        #player-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        iframe {
+            width: 560px;
+            height: 315px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>S</h2
+    <div id="ad-container">
+        <div id="ban1" class="banner-ad">Banner 1</div>
+        <div id="ban2" class="banner-ad">Banner 2</div>
+        <div id="ban3" class="banner-ad">Banner 3</div>
+        <div id="ban4" class="banner-ad">Banner 4</div>
+        <div id="ban5" class="banner-ad">Banner 5</div>
+        <div id="ban6" class="banner-ad">Banner 6</div>
+    </div>
+
+    <div id="player-container">
+        <iframe id="player" frameborder="0" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        let playlistId = "PLYLCJNItFpo_Wm8IxImgB_Ipa4BU6s4h0"; // Your Playlist ID
+        let interstitialAdId = "InterstitialAdUnit"; // Your Unity Interstitial Ad ID
+        let bannerAds = ["ban1", "ban2", "ban3", "ban4", "ban5", "ban6"]; // Your Unity Banner IDs
+        let adReady = false;
+
+        function loadYouTubePlayer() {
+            let randomIndex = Math.floor(Math.random() * 100) + 1; // Pick a random video
+            let videoUrl = `https://www.youtube.com/embed/videoseries?list=${playlistId}&index=${randomIndex}&autoplay=1&mute=1`;
+
+            document.getElementById("player").src = videoUrl;
+    }
+        function loadUnityAds() {
+            unityAds.initialize("5814193", false, function() {
+                unityAds.getPlacementState(interstitialAdId, function(state) {
+                    adReady = (state === "READY");
+                });
+
+              
+                bannerAds.forEach((bannerId) => {
+                    unityAds.loadBanner(bannerId, function() {
+                        unityAds.showBanner(bannerId, bannerId);
+                    });
+                });
+            });
+        }
+
+      
+        function startAdTimer() {
+            setInterval(() => {
+                if (adReady) {
+                    unityAds.show(interstitialAdId);
+                }
+            }, 60000);
+        }
+
+        loadUnityAds();
+        loadYouTubePlayer();
+        startAdTimer();
+    </script>
+
+</body>
+</html>
+
